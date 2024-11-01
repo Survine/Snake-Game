@@ -4,7 +4,7 @@ import random
 # Constants
 GAME_WIDTH = 700
 GAME_HEIGHT = 700
-INITIAL_SPEED = 100
+INITIAL_SPEED = 120
 SPACE_SIZE = 25
 SNAKE_INITIAL_LENGTH = 3
 SNAKE_COLOR = "green"
@@ -108,10 +108,11 @@ def food_eaten():
     global score, level
     if snake.body[0] == [food.x, food.y]:
         score += 1
-        level = score // 5 + 1
-        label.config(text=f"Score: {score}")
+        label.config(text=f"Score: {score}  Level: {level}")
         canvas.delete("food")
         food.generate_food()
+
+        # Every 5 points, increase difficulty and possibly spawn power-up
         if score % 5 == 0:
             increase_difficulty()
             if powerup_timer is None:
@@ -120,7 +121,8 @@ def food_eaten():
     return False
 
 def increase_difficulty():
-    global INITIAL_SPEED
+    global INITIAL_SPEED, level
+    level += 1
     INITIAL_SPEED = max(50, INITIAL_SPEED - 5 * level)
 
 def spawn_powerup():
@@ -215,10 +217,6 @@ def restart_game():
     snake.__init__()
     food.generate_food()
     next_turn()
-
-def game_over():
-    canvas.delete(ALL)
-    canvas.create_text(GAME_WIDTH / 2, GAME_HEIGHT / 2, text="Game Over", font=("consolas", 50), fill="red")
 
 # Setup game window
 window = Tk()
